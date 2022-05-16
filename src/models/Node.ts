@@ -1,16 +1,16 @@
 import React from "react";
 
 export enum NodeType {
-  START = 'START',
-  END = 'END',
-  TERMINATE_END = 'TERMINATE_END',
-  APPROVE = 'APPROVE',
-  INPUT = 'INPUT',
-  SERVICE = 'SERVICE',
-  OR_GATEWAY = 'OR_GATEWAY',
-  XOR_GATEWAY = 'XOR_GATEWAY',
-  CALL_ACTIVITY = 'CALL_ACTIVITY',
-  SUB_PROCESS = 'SUB_PROCESS'
+  START = "START",
+  END = "END",
+  TERMINATE_END = "TERMINATE_END",
+  APPROVE = "APPROVE",
+  INPUT = "INPUT",
+  SERVICE = "SERVICE",
+  OR_GATEWAY = "OR_GATEWAY",
+  XOR_GATEWAY = "XOR_GATEWAY",
+  CALL_ACTIVITY = "CALL_ACTIVITY",
+  SUB_PROCESS = "SUB_PROCESS",
 }
 
 export interface NodeModelPro<T = any> {
@@ -23,7 +23,7 @@ export interface NodeModelPro<T = any> {
   canvasProps: {
     x: number;
     y: number;
-  }
+  };
 }
 
 export interface NodePro<T = any> {
@@ -31,6 +31,7 @@ export interface NodePro<T = any> {
   subType: string;
   name: string;
   icon?: string | JSX.Element;
+  color?: string;
   selectable?: boolean;
   defaultOptions: Partial<T>;
   Config?: React.ComponentType;
@@ -40,3 +41,5 @@ export interface NodeConfigProps<T = any> {
   dataModel: NodeModelPro<T>;
   onChange: (updates: Partial<NodeModelPro<T>>) => void;
 }
+
+export type NodeMapType = Record<string, NodePro>;
