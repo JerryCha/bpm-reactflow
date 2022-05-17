@@ -66,7 +66,7 @@ export const EditorStory = () => {
       </div>
       <Editor
         ref={editorRef}
-        // nodes={[]}
+        nodes={[]}
         // flows={[]}
         originalModel={{ nodes: initialNodes, flows: initialEdges }}
       />

@@ -1,4 +1,4 @@
-import { NodeModelPro } from "../../models";
+import { NodeModelPro } from "../../../models";
 
 export const StartNode = (props: { dataModel: NodeModelPro }) => {
   const { dataModel } = props;
@@ -17,6 +17,7 @@ export const StartNode = (props: { dataModel: NodeModelPro }) => {
         borderRadius: 16,
       }}
     >
+      <span></span>
       <span>{name}</span>
     </div>
   );

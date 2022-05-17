@@ -1,6 +1,6 @@
 import { Node as ReactFlowNode, Handle, Position } from "react-flow-renderer";
 import { NodeType } from "../../models";
-import { nodeCanvas } from "../../nodes";
+import { nodeCanvas } from "../NodeCanvas";
 export const NodeCanvasWrapper = (props: any) => {
   const Canvas = nodeCanvas[props.type as NodeType];
   return (

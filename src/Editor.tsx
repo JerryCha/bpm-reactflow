@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react'
 import ReactFlow, {
   Handle,
   Position,
@@ -6,26 +6,26 @@ import ReactFlow, {
   applyNodeChanges,
   applyEdgeChanges,
   NodeChange,
-} from "react-flow-renderer";
-import { RuntimeConfigContext } from "./contexts/RuntimeConfigContext";
-import { FlowPro, NodePro, NodeType, ProcessModel } from "./models";
-import { createNodeMap } from "./utils/node";
-import { nodeCanvas } from "./nodes";
-import { NodeCanvasWrapper } from "./components/NodeCanvasWrapper";
+} from 'react-flow-renderer'
+import { RuntimeConfigContext } from './contexts/RuntimeConfigContext'
+import { FlowPro, NodePro, NodeType, ProcessModel } from './models'
+import { createNodeMap } from './utils/node'
+import { nodeCanvas } from './components/NodeCanvas'
+import { NodeCanvasWrapper } from './components/NodeCanvasWrapper'
 
 interface EditorProps {
-  model?: ProcessModel;
-  // nodes: NodePro[];
+  model?: ProcessModel
+  nodes: NodePro[]
   // flows: FlowPro[];
-  originalModel: any;
+  originalModel: any
 }
 
 interface EditorRef {
-  getModel: () => any;
+  getModel: () => any
 }
 
 const GatewayNode = (props: any) => {
-  console.log("Gateway props", props);
+  console.log('Gateway props', props)
 
   return (
     <>
@@ -35,7 +35,7 @@ const GatewayNode = (props: any) => {
           width: 128,
           height: 32,
           padding: 32,
-          background: "#9AC8E2",
+          background: '#9AC8E2',
           borderRadius: 16,
         }}
       >
@@ -43,24 +43,24 @@ const GatewayNode = (props: any) => {
       </div>
       <Handle type="source" position={Position.Bottom} />
     </>
-  );
-};
+  )
+}
 
 export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
   const {
     model: inputModel = { nodes: [], flows: [] },
-    // nodes,
+    nodes = [],
     // flows,
     originalModel,
-  } = props;
-  const [nodeModel, setNodeModel] = useState(originalModel.nodes);
-  const [flowModel, setFlowModel] = useState(originalModel.flows);
+  } = props
+  const [nodeModel, setNodeModel] = useState(originalModel.nodes)
+  const [flowModel, setFlowModel] = useState(originalModel.flows)
 
-  // const configRuntime = useMemo(() => {
-  //   return {
-  //     nodeMap: createNodeMap(nodes),
-  //   };
-  // }, [nodes]);
+  const configRuntime = useMemo(() => {
+    return {
+      nodeMap: createNodeMap(nodes),
+    }
+  }, [nodes])
 
   useImperativeHandle(
     ref,
@@ -68,20 +68,20 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
       getModel: () => ({ nodes: nodeModel, flows: flowModel }),
     }),
     [nodeModel, flowModel]
-  );
+  )
 
   const onNodeChange = (changes: NodeChange[]) => {
-    console.log("node change", changes);
-    setNodeModel((nds: any[]) => applyNodeChanges(changes, nds));
-  };
+    console.log('node change', changes)
+    setNodeModel((nds: any[]) => applyNodeChanges(changes, nds))
+  }
   const onEdgeChange = (...args: any) => {
-    console.log(args);
-  };
+    console.log(args)
+  }
 
   const onConnect = (connection: any) => {
-    console.log(connection);
-    setFlowModel((eds: any) => addEdge(connection, eds));
-  };
+    console.log(connection)
+    setFlowModel((eds: any) => addEdge(connection, eds))
+  }
 
   const nodeTypes = useMemo(
     () => ({
@@ -89,17 +89,19 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
       [NodeType.START]: NodeCanvasWrapper,
     }),
     []
-  );
+  )
 
   return (
-    <ReactFlow
-      nodes={nodeModel}
-      edges={flowModel}
-      onNodesChange={onNodeChange}
-      onEdgesChange={onEdgeChange}
-      onConnect={onConnect}
-      nodeTypes={nodeTypes}
-      fitView
-    />
-  );
-});
+    <RuntimeConfigContext.Provider value={configRuntime}>
+      <ReactFlow
+        nodes={nodeModel}
+        edges={flowModel}
+        onNodesChange={onNodeChange}
+        onEdgesChange={onEdgeChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        fitView
+      />
+    </RuntimeConfigContext.Provider>
+  )
+})
