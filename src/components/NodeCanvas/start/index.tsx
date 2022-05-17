@@ -1,6 +1,8 @@
 import { NodeModelPro } from "../../../models";
 
 export const StartNode = (props: { dataModel: NodeModelPro }) => {
+  console.log(props);
+
   const { dataModel } = props;
   const { name, subType } = dataModel;
   // use node definition to get color, icon
