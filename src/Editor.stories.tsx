@@ -1,6 +1,7 @@
 import { Button } from "@mantine/core";
 import { useRef } from "react";
 import { Editor } from "./Editor";
+import { FlowType, NodeType } from "./models";
 
 export default {
   title: "BPM Pro",
@@ -10,40 +11,32 @@ export default {
 const initialNodes = [
   {
     id: "1",
-    type: "START",
-    data: { name: "Input Node" },
-    position: { x: 250, y: 25 },
+    name: "Input Node",
+    type: NodeType.START,
+    subType: "bpm.start",
+    options: { form: { id: "114514" } },
+    canvasProps: { x: 250, y: 25 },
   },
-
   {
     id: "2",
-    // you can also pass a React component as a label
-    data: { label: <div>Default Node</div> },
-    position: { x: 100, y: 125 },
-  },
-  {
-    id: "3",
-    type: "output",
-    data: { label: "Output Node" },
-    position: { x: 250, y: 250 },
-  },
-  {
-    id: "4",
-    type: "Gateway",
-    data: { label: "Gateway" },
-    position: { x: 480, y: 140 },
-  },
-  {
-    id: "5",
-    type: "Gateway",
-    data: { label: "Gateway" },
-    position: { x: 480, y: 360 },
+    name: "Output Node",
+    type: NodeType.END,
+    subType: "bpm.end",
+    options: {},
+    canvasProps: { x: 350, y: 85 },
   },
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2" },
-  { id: "e2-3", source: "2", target: "3", animated: true },
+  {
+    id: "e1-2",
+    type: FlowType.CONDITION,
+    name: "Some Flow",
+    source: "1",
+    target: "2",
+    canvasProps: {},
+    options: { conditionExpression: "a==1" },
+  },
 ];
 
 export const EditorStory = () => {
@@ -68,7 +61,7 @@ export const EditorStory = () => {
         ref={editorRef}
         nodes={[]}
         // flows={[]}
-        originalModel={{ nodes: initialNodes, flows: initialEdges }}
+        model={{ nodes: initialNodes, flows: initialEdges }}
       />
     </div>
   );

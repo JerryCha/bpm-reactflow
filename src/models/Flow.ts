@@ -1,15 +1,18 @@
 import { NodeModelPro } from "./Node";
 
 export enum FlowType {
-  CONDITION = 'CONDITION'
+  CONDITION = "CONDITION",
 }
 
 export interface FlowModelPro<T = any> {
   id: string;
+  type: FlowType;
   source: string;
   target: string;
   name: string;
-  canvasProps: {};
+  canvasProps: {
+    [key: string]: any;
+  };
   options: T;
 }
 

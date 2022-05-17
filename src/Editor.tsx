@@ -9,15 +9,15 @@ import ReactFlow, {
 } from 'react-flow-renderer'
 import { RuntimeConfigContext } from './contexts/RuntimeConfigContext'
 import { FlowPro, NodePro, NodeType, ProcessModel } from './models'
-import { createNodeMap } from './utils/node'
 import { nodeCanvas } from './components/NodeCanvas'
-import { NodeCanvasWrapper } from './components/NodeCanvasWrapper'
+import { createNodeMap } from "./utils/node";
+import { NodeCanvasWrapper } from "./components/NodeCanvasWrapper";
+import { toProcessModel, toRFEdge, toRFNode } from "./utils";
 
 interface EditorProps {
   model?: ProcessModel
   nodes: NodePro[]
   // flows: FlowPro[];
-  originalModel: any
 }
 
 interface EditorRef {
@@ -51,10 +51,10 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     model: inputModel = { nodes: [], flows: [] },
     nodes = [],
     // flows,
-    originalModel,
-  } = props
-  const [nodeModel, setNodeModel] = useState(originalModel.nodes)
-  const [flowModel, setFlowModel] = useState(originalModel.flows)
+  } = props;
+
+  const [nodeModel, setNodeModel] = useState(inputModel.nodes.map(toRFNode));
+  const [flowModel, setFlowModel] = useState(inputModel.flows.map(toRFEdge));
 
   const configRuntime = useMemo(() => {
     return {
@@ -65,7 +65,11 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      getModel: () => ({ nodes: nodeModel, flows: flowModel }),
+      getModel: (convert = true) => {
+        return convert
+          ? toProcessModel(nodeModel, flowModel)
+          : { nodes: nodeModel, flows: flowModel };
+      },
     }),
     [nodeModel, flowModel]
   )
