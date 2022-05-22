@@ -34,6 +34,14 @@ const initialNodes = [
     options: {},
     canvasProps: { x: 150, y: 85 },
   },
+  {
+    id: "4",
+    name: "排他网关",
+    type: NodeType.XOR_GATEWAY,
+    subType: "bpm.xor_gateway",
+    options: {},
+    canvasProps: { x: 450, y: 185 },
+  }
 ];
 
 const initialEdges = [

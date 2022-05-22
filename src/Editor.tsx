@@ -14,6 +14,8 @@ import ReactFlow, {
   NodeChange,
   EdgeChange,
   ReactFlowInstance,
+  Background,
+  BackgroundVariant,
 } from "react-flow-renderer";
 import { RuntimeConfigContext } from "./contexts/RuntimeConfigContext";
 import { FlowPro, NodePro, NodeType, ProcessModel } from "./models";
@@ -90,7 +92,9 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
       [NodeType.END]: NodeCanvasWrapper,
       [NodeType.TERMINATE_END]: NodeCanvasWrapper,
       [NodeType.APPROVE]: NodeCanvasWrapper,
-      [NodeType.INPUT]: NodeCanvasWrapper
+      [NodeType.INPUT]: NodeCanvasWrapper,
+      [NodeType.XOR_GATEWAY]: NodeCanvasWrapper,
+      [NodeType.OR_GATEWAY]: NodeCanvasWrapper
     }),
     []
   );
@@ -113,6 +117,7 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
       >
         <MiniMap />
         <Controls />
+        <Background />
       </ReactFlow>
     </RuntimeConfigContext.Provider>
   );

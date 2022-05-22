@@ -9,8 +9,8 @@ export const ManualNode = (props: { dataModel: NodeModelPro }) => {
     <div
       style={{
         display: 'grid',
-        width: 108,
-        height: 100,
+        width: 136,
+        height: 88,
         gridTemplateRows: '16px auto',
         gap: 8,
         boxSizing: 'border-box',
