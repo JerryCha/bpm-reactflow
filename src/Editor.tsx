@@ -6,6 +6,8 @@ import {
   useState,
 } from "react";
 import ReactFlow, {
+  MiniMap,
+  Controls,
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
@@ -72,16 +74,13 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
   );
 
   const onNodeChange = (changes: NodeChange[]) => {
-    console.log("node change", changes);
     setNodeModel((nds: any[]) => applyNodeChanges(changes, nds));
   };
   const onEdgeChange = (changes: EdgeChange[]) => {
-    console.log("flow change", changes);
     setFlowModel((eds: any[]) => applyEdgeChanges(changes, eds));
   };
 
   const onConnect = (connection: any) => {
-    console.log(connection);
     setFlowModel((eds: any) => addEdge(connection, eds));
   };
 
@@ -89,6 +88,9 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     () => ({
       [NodeType.START]: NodeCanvasWrapper,
       [NodeType.END]: NodeCanvasWrapper,
+      [NodeType.TERMINATE_END]: NodeCanvasWrapper,
+      [NodeType.APPROVE]: NodeCanvasWrapper,
+      [NodeType.INPUT]: NodeCanvasWrapper
     }),
     []
   );
@@ -104,7 +106,14 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         fitView
-      />
+        proOptions={{
+          account: "paid-custom",
+          hideAttribution: true
+        }}
+      >
+        <MiniMap />
+        <Controls />
+      </ReactFlow>
     </RuntimeConfigContext.Provider>
   );
 });

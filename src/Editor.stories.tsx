@@ -1,6 +1,7 @@
 import { Button } from "@mantine/core";
 import { useRef } from "react";
 import { Editor } from "./Editor";
+import { nodes } from "./mocks/nodes";
 import { FlowType, NodeType } from "./models";
 
 export default {
@@ -11,7 +12,7 @@ export default {
 const initialNodes = [
   {
     id: "1",
-    name: "Input Node",
+    name: "开始",
     type: NodeType.START,
     subType: "bpm.start",
     options: { form: { id: "114514" } },
@@ -19,11 +20,19 @@ const initialNodes = [
   },
   {
     id: "2",
-    name: "Output Node",
+    name: "结束",
     type: NodeType.END,
     subType: "bpm.end",
     options: {},
     canvasProps: { x: 350, y: 85 },
+  },
+  {
+    id: "3",
+    name: "审批",
+    type: NodeType.APPROVE,
+    subType: "bpm.approve",
+    options: {},
+    canvasProps: { x: 150, y: 85 },
   },
 ];
 
@@ -59,8 +68,8 @@ export const EditorStory = () => {
       </div>
       <Editor
         ref={editorRef}
-        nodes={[]}
-        // flows={[]}
+        nodes={nodes}
+        flows={[]}
         model={{ nodes: initialNodes, flows: initialEdges }}
       />
     </div>

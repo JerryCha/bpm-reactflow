@@ -1,7 +1,10 @@
 import { NodeType } from "../../models";
-import { StartNode } from "./start";
+import { ManualNode } from "./Manual";
+import { StartEndNode } from "./StartEnd";
 
 export const nodeCanvas: Record<string, any> = {
-  [NodeType.START]: StartNode,
-  [NodeType.END]: StartNode,
+  [NodeType.START]: StartEndNode,
+  [NodeType.END]: StartEndNode,
+  [NodeType.APPROVE]: ManualNode,
+  [NodeType.INPUT]: ManualNode
 };

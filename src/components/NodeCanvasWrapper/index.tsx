@@ -1,10 +1,9 @@
-import { Node as RFNode, Handle, Position } from "react-flow-renderer";
+import { NodeProps as RFNodeProps, Handle, Position } from "react-flow-renderer";
 import { toNodeModel } from "@/utils";
 import { NodeType } from "@/models";
 import { nodeCanvas } from "../NodeCanvas";
-export const NodeCanvasWrapper = (props: RFNode) => {
+export const NodeCanvasWrapper = (props: RFNodeProps) => {
   const Canvas = nodeCanvas[props.type as NodeType];
-  console.log(props, toNodeModel(props));
 
   return (
     <>
