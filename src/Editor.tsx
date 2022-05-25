@@ -1,10 +1,11 @@
 import {
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
-} from "react";
+} from 'react'
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -16,23 +17,23 @@ import ReactFlow, {
   ReactFlowInstance,
   Background,
   BackgroundVariant,
-} from "react-flow-renderer";
-import { RuntimeConfigContext } from "./contexts/RuntimeConfigContext";
-import { FlowPro, NodePro, NodeType, ProcessModel } from "./models";
-import { createNodeMap } from "./utils/node";
-import { NodeCanvasWrapper } from "./components/NodeCanvasWrapper";
-import { toProcessModel, toRFEdge, toRFNode } from "./utils";
+} from 'react-flow-renderer'
+import { ConfigContext } from './contexts/ConfigContext'
+import { FlowPro, NodePro, NodeType, ProcessModel } from './models'
+import { createNodeMap } from './utils/node'
+import { NodeCanvasWrapper } from './components/NodeCanvasWrapper'
+import { toProcessModel, toRFEdge, toRFNode } from './utils'
 
 interface EditorProps {
-  model?: ProcessModel;
-  nodes: NodePro[];
-  flows: FlowPro[];
+  model?: ProcessModel
+  nodes: NodePro[]
+  flows: FlowPro[]
 }
 
 interface EditorRef {
-  getModel: () => any;
-  setModel: (model: ProcessModel) => void;
-  validate: () => Promise<ProcessModel>;
+  getModel: () => any
+  setModel: (model: ProcessModel) => void
+  validate: () => Promise<ProcessModel>
 }
 
 export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
@@ -40,18 +41,18 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     model: inputModel = { nodes: [], flows: [] },
     nodes = [],
     flows = [],
-  } = props;
+  } = props
 
-  const [nodeModel, setNodeModel] = useState(inputModel.nodes.map(toRFNode));
-  const [flowModel, setFlowModel] = useState(inputModel.flows.map(toRFEdge));
+  const [nodeModel, setNodeModel] = useState(inputModel.nodes.map(toRFNode))
+  const [flowModel, setFlowModel] = useState(inputModel.flows.map(toRFEdge))
 
   const configRuntime = useMemo(() => {
     return {
       nodeMap: createNodeMap(nodes),
-    };
-  }, [nodes]);
+    }
+  }, [nodes])
 
-  const rfInstance = useRef<ReactFlowInstance>();
+  const rfInstance = useRef<ReactFlowInstance>()
 
   useImperativeHandle(
     ref,
@@ -59,32 +60,32 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
       getModel: (convert = true) => {
         return convert
           ? toProcessModel(nodeModel, flowModel)
-          : { nodes: nodeModel, flows: flowModel };
+          : { nodes: nodeModel, flows: flowModel }
       },
       setModel: (model) => {
         if (!rfInstance.current) {
-          return;
+          return
         }
-        const rfNodes = model.nodes.map(toRFNode);
-        const rfEdges = model.flows.map(toRFEdge);
-        rfInstance.current.setNodes(rfNodes);
-        rfInstance.current.setEdges(rfEdges);
+        const rfNodes = model.nodes.map(toRFNode)
+        const rfEdges = model.flows.map(toRFEdge)
+        rfInstance.current.setNodes(rfNodes)
+        rfInstance.current.setEdges(rfEdges)
       },
       validate: () => Promise.resolve(toProcessModel(nodeModel, flowModel)),
     }),
     [nodeModel, flowModel, rfInstance]
-  );
+  )
 
   const onNodeChange = (changes: NodeChange[]) => {
-    setNodeModel((nds: any[]) => applyNodeChanges(changes, nds));
-  };
+    setNodeModel((nds: any[]) => applyNodeChanges(changes, nds))
+  }
   const onEdgeChange = (changes: EdgeChange[]) => {
-    setFlowModel((eds: any[]) => applyEdgeChanges(changes, eds));
-  };
+    setFlowModel((eds: any[]) => applyEdgeChanges(changes, eds))
+  }
 
   const onConnect = (connection: any) => {
-    setFlowModel((eds: any) => addEdge(connection, eds));
-  };
+    setFlowModel((eds: any) => addEdge(connection, eds))
+  }
 
   const nodeTypes = useMemo(
     () => ({
@@ -94,13 +95,17 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
       [NodeType.APPROVE]: NodeCanvasWrapper,
       [NodeType.INPUT]: NodeCanvasWrapper,
       [NodeType.XOR_GATEWAY]: NodeCanvasWrapper,
-      [NodeType.OR_GATEWAY]: NodeCanvasWrapper
+      [NodeType.OR_GATEWAY]: NodeCanvasWrapper,
     }),
     []
-  );
+  )
+
+  const onClick = useCallback((_: React.SyntheticEvent, element: any) => {
+    
+  }, [])
 
   return (
-    <RuntimeConfigContext.Provider value={configRuntime}>
+    <ConfigContext.Provider value={configRuntime}>
       <ReactFlow
         nodes={nodeModel}
         edges={flowModel}
@@ -109,16 +114,18 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
         onEdgesChange={onEdgeChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        onNodeClick={onClick}
+        onEdgeClick={onClick}
         fitView
         proOptions={{
-          account: "paid-custom",
-          hideAttribution: true
+          account: 'paid-custom',
+          hideAttribution: true,
         }}
       >
         <MiniMap />
         <Controls />
         <Background />
       </ReactFlow>
-    </RuntimeConfigContext.Provider>
-  );
-});
+    </ConfigContext.Provider>
+  )
+})

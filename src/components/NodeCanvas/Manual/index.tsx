@@ -15,6 +15,7 @@ export const ManualNode = (props: { dataModel: NodeModelPro }) => {
         gap: 8,
         boxSizing: 'border-box',
         border: `1px solid ${color}`,
+        background: "#FFF",
         borderRadius: 8,
         padding: 8,
       }}

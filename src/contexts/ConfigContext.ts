@@ -1,10 +1,10 @@
 import { createContext } from "react";
 import { NodeMapType } from "../models";
 
-export interface RuntimeConfigContextType {
+export interface ConfigContextType {
   nodeMap: NodeMapType;
 }
 
-export const RuntimeConfigContext = createContext<RuntimeConfigContextType>({
+export const ConfigContext = createContext<ConfigContextType>({
   nodeMap: {},
 });

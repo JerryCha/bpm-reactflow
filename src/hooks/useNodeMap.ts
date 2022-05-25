@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { RuntimeConfigContext } from "../contexts/RuntimeConfigContext";
+import { ConfigContext } from "../contexts/ConfigContext";
 
 export const useNodeMap = () => { 
-  const configRuntime = useContext(RuntimeConfigContext);
+  const configRuntime = useContext(ConfigContext);
   return configRuntime.nodeMap; 
 }
