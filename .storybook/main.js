@@ -16,6 +16,12 @@ module.exports = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, '../src/'),
     }
+    // omit default svg load rules
+    const fileLoaderRule = config.module.rules.find(
+      (rule) => rule.test && rule.test.test('.svg')
+    )
+    fileLoaderRule.exclude = /\.svg$/
+    // push svgr 
     config.module.rules.push({
       test: /\.svg$/i,
       use: ['@svgr/webpack'],
