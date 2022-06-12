@@ -89,7 +89,7 @@ export const NodeLibrary = () => {
       {nodeGroups.map((group, index) => {
         return (
           <React.Fragment key={group.id}>
-            <div>
+            <div className='bpm-nodelib-group'>
               {group.nodes.map((node) => (
                 <NodeItem
                   key={`nodelib-item-${node.subType}`}

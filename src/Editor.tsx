@@ -117,7 +117,6 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
       }
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const subType = event.dataTransfer.getData('application/reactflow');
-      console.log('subType', subType);
 
       // check if the dropped element is valid
       if (!subType) {
