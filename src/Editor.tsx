@@ -1,4 +1,4 @@
-import {
+import React, {
   forwardRef,
   useCallback,
   useImperativeHandle,
@@ -17,18 +17,27 @@ import ReactFlow, {
   ReactFlowInstance,
   Background,
   BackgroundVariant,
+  ReactFlowProvider,
 } from 'react-flow-renderer';
 import { ConfigContext } from './contexts/ConfigContext';
 import { FlowPro, NodePro, NodeType, ProcessModel } from './models';
-import { createNodeMap } from './utils/node';
+import { createNodeMap, getDefaultNodeModel } from './utils/node';
 import { NodeCanvasWrapper } from './components/NodeCanvasWrapper';
 import { toProcessModel, toRFEdge, toRFNode } from './utils';
 import { NodeLibrary } from '@/components/NodeLibrary';
+import { nanoid } from 'nanoid';
+
+export interface GroupCategories {
+  id: string;
+  name: string;
+  nodeList: string[];
+}
 
 interface EditorProps {
   model?: ProcessModel;
   nodes: NodePro[];
   flows: FlowPro[];
+  groupCategories?: GroupCategories[];
 }
 
 interface EditorRef {
@@ -42,18 +51,23 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     model: inputModel = { nodes: [], flows: [] },
     nodes = [],
     flows = [],
+    groupCategories,
   } = props;
 
   const [nodeModel, setNodeModel] = useState(inputModel.nodes.map(toRFNode));
   const [flowModel, setFlowModel] = useState(inputModel.flows.map(toRFEdge));
 
+  const nodeMap = useMemo(() => createNodeMap(nodes), [nodes]);
+
   const configRuntime = useMemo(() => {
     return {
-      nodeMap: createNodeMap(nodes),
+      nodeMap,
+      groupCategories,
     };
-  }, [nodes]);
+  }, [nodeMap, groupCategories]);
 
-  const rfInstance = useRef<ReactFlowInstance>();
+  const [rfInstance, setRfInstance] = useState<ReactFlowInstance>();
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(
     ref,
@@ -64,13 +78,13 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
           : { nodes: nodeModel, flows: flowModel };
       },
       setModel: (model) => {
-        if (!rfInstance.current) {
+        if (!rfInstance) {
           return;
         }
         const rfNodes = model.nodes.map(toRFNode);
         const rfEdges = model.flows.map(toRFEdge);
-        rfInstance.current.setNodes(rfNodes);
-        rfInstance.current.setEdges(rfEdges);
+        rfInstance.setNodes(rfNodes);
+        rfInstance.setEdges(rfEdges);
       },
       validate: () => Promise.resolve(toProcessModel(nodeModel, flowModel)),
     }),
@@ -87,6 +101,45 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
   const onConnect = (connection: any) => {
     setFlowModel((eds: any) => addEdge(connection, eds));
   };
+
+  const onDragOver = useCallback((event: any) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback(
+    (event: any) => {
+      console.log(event);
+      event.preventDefault();
+      if (!reactFlowWrapper.current || !rfInstance) {
+        console.log(reactFlowWrapper, rfInstance);
+        return;
+      }
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      const subType = event.dataTransfer.getData('application/reactflow');
+      console.log('subType', subType);
+
+      // check if the dropped element is valid
+      if (!subType) {
+        return;
+      }
+
+      const position = rfInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+
+      const node = nodeMap[subType];
+
+      const newNode = {
+        ...getDefaultNodeModel(node),
+        canvasProps: { ...position },
+      };
+
+      setNodeModel((nds) => nds.concat(toRFNode(newNode)));
+    },
+    [nodeMap, rfInstance]
+  );
 
   const nodeTypes = useMemo(
     () => ({
@@ -106,27 +159,37 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
 
   return (
     <ConfigContext.Provider value={configRuntime}>
-      <ReactFlow
-        nodes={nodeModel}
-        edges={flowModel}
-        onInit={(instance) => (rfInstance.current = instance)}
-        onNodesChange={onNodeChange}
-        onEdgesChange={onEdgeChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes}
-        onNodeClick={onClick}
-        onEdgeClick={onClick}
-        fitView
-        proOptions={{
-          account: 'paid-custom',
-          hideAttribution: true,
-        }}
-      >
-        <NodeLibrary />
-        <MiniMap />
-        <Controls />
-        <Background />
-      </ReactFlow>
+      <ReactFlowProvider>
+        <div
+          className='bpm bpm-editor-root'
+          ref={reactFlowWrapper}
+          style={{ width: '100%', height: '100%' }}
+        >
+          <ReactFlow
+            nodes={nodeModel}
+            edges={flowModel}
+            onInit={(instance) => setRfInstance(instance)}
+            onNodesChange={onNodeChange}
+            onEdgesChange={onEdgeChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            onNodeClick={onClick}
+            onEdgeClick={onClick}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            fitView
+            proOptions={{
+              account: 'paid-custom',
+              hideAttribution: true,
+            }}
+          >
+            <NodeLibrary />
+            <MiniMap />
+            <Controls />
+            <Background />
+          </ReactFlow>
+        </div>
+      </ReactFlowProvider>
     </ConfigContext.Provider>
   );
 });

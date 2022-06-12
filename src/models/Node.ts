@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 
 export enum NodeType {
-  START = "START",
-  END = "END",
-  TERMINATE_END = "TERMINATE_END",
-  APPROVE = "APPROVE",
-  INPUT = "INPUT",
-  SERVICE = "SERVICE",
-  OR_GATEWAY = "OR_GATEWAY",
-  XOR_GATEWAY = "XOR_GATEWAY",
-  CALL_ACTIVITY = "CALL_ACTIVITY",
-  SUB_PROCESS = "SUB_PROCESS",
+  START = 'START',
+  END = 'END',
+  TERMINATE_END = 'TERMINATE_END',
+  APPROVE = 'APPROVE',
+  INPUT = 'INPUT',
+  SERVICE = 'SERVICE',
+  OR_GATEWAY = 'OR_GATEWAY',
+  XOR_GATEWAY = 'XOR_GATEWAY',
+  CALL_ACTIVITY = 'CALL_ACTIVITY',
+  SUB_PROCESS = 'SUB_PROCESS',
 }
 
 export interface NodeModelPro<T = any> {
@@ -30,7 +30,7 @@ export interface NodePro<T = any> {
   type: NodeType;
   subType: string;
   name: string;
-  icon?: string | JSX.Element;
+  icon?: string | React.ReactElement;
   color?: string;
   selectable?: boolean;
   defaultOptions: Partial<T>;
