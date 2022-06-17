@@ -1,7 +1,10 @@
-import { NodePro, NodeType } from '../../../models'
-import ApproveIconn, {ReactComponent as ApproveIcon} from './approve.svg?svgr';
+import { NodePro, NodeType } from '../../../models';
+import ApproveIconn, {
+  ReactComponent as ApproveIcon,
+} from './approve.svg?svgr';
+import { Config } from './Config';
 
-console.log(ApproveIcon, ApproveIconn, <ApproveIconn />)
+console.log(ApproveIcon, ApproveIconn, <ApproveIconn />);
 
 export const ApproveNode: NodePro<any> = {
   type: NodeType.APPROVE,
@@ -10,4 +13,5 @@ export const ApproveNode: NodePro<any> = {
   name: '审批',
   defaultOptions: {},
   icon: <ApproveIconn />,
-}
+  Config,
+};

@@ -34,7 +34,7 @@ export interface NodePro<T = any> {
   color?: string;
   selectable?: boolean;
   defaultOptions: Partial<T>;
-  Config?: React.ComponentType;
+  Config?: React.ComponentType<NodeConfigProps>;
 }
 
 export interface NodeConfigProps<T = any> {
@@ -43,3 +43,42 @@ export interface NodeConfigProps<T = any> {
 }
 
 export type NodeMapType = Record<string, NodePro>;
+
+export enum ACTION_TYPE_CODE {
+  ONE_BY_ONE = 'oneByOne',
+  AND = 'and',
+  OR = 'or',
+  ONE = 'one',
+}
+
+export type Assignment = {
+  assignType: string;
+  actionType: ACTION_TYPE_CODE;
+  options?: Record<string, any>;
+  fallback?: {
+    type: string;
+    options?: Record<string, any>;
+  };
+};
+
+export type FormOptions = {
+  id?: string;
+}
+
+export type BaseManualNodeOptions = {
+  assignment: Assignment;
+  form: FormOptions;
+  nextNodeOptions?: {
+    allowNextNodeAssigneeOverride?: boolean;
+    nodeId?: string;
+  }
+  endProcessWhenReject?: boolean;
+  addSign?: boolean;
+  allowTransfer?: boolean;
+  backward?: {
+    enable: boolean;
+    type: 'RERUN' | 'RETURN';
+  }
+  autoPassIfPassedBefore?: boolean;
+  autoPassIfAssigneeIsStarter?: boolean;
+}

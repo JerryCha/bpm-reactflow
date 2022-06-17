@@ -1,6 +1,6 @@
-import { Edge as RFEdge, Node as RFNode } from "react-flow-renderer";
-import { FlowModelPro, NodeModelPro } from "@/models";
-import { NodeType, FlowType, ProcessModel } from "@/models";
+import { Edge as RFEdge, Node as RFNode } from 'react-flow-renderer';
+import { FlowModelPro, NodeModelPro } from '@/models';
+import { NodeType, FlowType, ProcessModel } from '@/models';
 
 export const toProcessModel = (
   rfNodes: RFNode[],
@@ -14,10 +14,11 @@ export const toProcessModel = (
 
 export const toNodeModel = (rfNode: RFNode): NodeModelPro => {
   const { position, id, data, type } = rfNode;
+  const { elementType, ...restData } = data;
   return {
     id,
     type: type as NodeType,
-    ...data,
+    ...restData,
     canvasProps: {
       ...position,
     },
@@ -26,6 +27,7 @@ export const toNodeModel = (rfNode: RFNode): NodeModelPro => {
 
 export const toFlowModel = (rfEdge: RFEdge): FlowModelPro => {
   const { id, source, target, data, sourceHandle, targetHandle } = rfEdge;
+  const { elementType, ...restData } = data;
   return {
     id,
     type: FlowType.CONDITION,
@@ -35,7 +37,7 @@ export const toFlowModel = (rfEdge: RFEdge): FlowModelPro => {
       sourceHandle,
       targetHandle,
     },
-    ...data,
+    ...restData,
   };
 };
 
@@ -45,7 +47,7 @@ export const toRFNode = (nodeModel: NodeModelPro): RFNode => {
     id,
     type,
     position: { x: canvasProps.x, y: canvasProps.y },
-    data: rest,
+    data: { ...rest, elementType: 'node' },
   };
 };
 
@@ -57,6 +59,6 @@ export const toRFEdge = (flowModel: FlowModelPro): RFEdge => {
     target,
     sourceHandle: canvasProps.sourceHandle,
     targetHandle: canvasProps.targetHandle,
-    data: rest,
+    data: { ...rest, elementType: 'flow' },
   };
 };

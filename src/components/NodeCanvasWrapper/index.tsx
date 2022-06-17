@@ -7,10 +7,10 @@ export const NodeCanvasWrapper = (props: RFNodeProps) => {
 
   return (
     <>
-      <Handle position={Position.Left} type="target" />
+      {/*<Handle position={Position.Left} type="target" />*/}
       <Handle position={Position.Top} type="target" />
       <Canvas dataModel={toNodeModel(props)} />
-      <Handle position={Position.Right} type="source" />
+      {/*<Handle position={Position.Right} type="source" />*/}
       <Handle position={Position.Bottom} type="source" />
     </>
   );

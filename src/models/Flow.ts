@@ -2,6 +2,8 @@ import { NodeModelPro } from "./Node";
 
 export enum FlowType {
   CONDITION = "CONDITION",
+  FORWARD = "FORWARD",
+  BACKWARD = "BACKWARD"
 }
 
 export interface FlowModelPro<T = any> {

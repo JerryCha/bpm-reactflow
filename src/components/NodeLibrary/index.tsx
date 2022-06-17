@@ -30,7 +30,7 @@ const NodeItem = (
       draggable
       onDragStart={(event) => props.onDrag(event, props.subType)}
     >
-      <div style={{ fontSize: 16 }}>{props.icon}</div>
+      <div style={{ fontSize: 16, color: '#000' }}>{props.icon}</div>
       <div>{props.name}</div>
     </div>
   );

@@ -7,25 +7,35 @@ import React, {
   useState,
 } from 'react';
 import ReactFlow, {
-  MiniMap,
-  Controls,
   addEdge,
-  applyNodeChanges,
   applyEdgeChanges,
-  NodeChange,
-  EdgeChange,
-  ReactFlowInstance,
+  applyNodeChanges,
   Background,
-  BackgroundVariant,
+  Controls,
+  Edge as RFEdge,
+  EdgeChange,
+  MarkerType,
+  Node as RFNode,
+  NodeChange,
+  ReactFlowInstance,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
 } from 'react-flow-renderer';
 import { ConfigContext } from './contexts/ConfigContext';
-import { FlowPro, NodePro, NodeType, ProcessModel } from './models';
+import { FlowPro, FlowType, NodePro, NodeType, ProcessModel } from './models';
 import { createNodeMap, getDefaultNodeModel } from './utils/node';
 import { NodeCanvasWrapper } from './components/NodeCanvasWrapper';
-import { toProcessModel, toRFEdge, toRFNode } from './utils';
+import {
+  FloatingConnectionLine,
+  FloatingEdge,
+  toProcessModel,
+  toRFEdge,
+  toRFNode,
+} from '@/utils';
 import { NodeLibrary } from '@/components/NodeLibrary';
-import { nanoid } from 'nanoid';
+import { PropertiesPanel } from '@/components/PropertiesPanel';
+import { RuntimeContext } from './contexts/RuntimeContext';
 
 export interface GroupCategories {
   id: string;
@@ -54,8 +64,14 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     groupCategories,
   } = props;
 
-  const [nodeModel, setNodeModel] = useState(inputModel.nodes.map(toRFNode));
-  const [flowModel, setFlowModel] = useState(inputModel.flows.map(toRFEdge));
+  // const [nodeModel, setNodeModel] = useState(inputModel.nodes.map(toRFNode));
+  // const [flowModel, setFlowModel] = useState(inputModel.flows.map(toRFEdge));
+  const [nodeModel, setNodeModel, onNodesChange] = useNodesState(
+    inputModel.nodes.map(toRFNode)
+  );
+  const [flowModel, setFlowModel, onEdgesChange] = useEdgesState(
+    inputModel.flows.map(toRFEdge)
+  );
 
   const nodeMap = useMemo(() => createNodeMap(nodes), [nodes]);
 
@@ -91,15 +107,29 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     [nodeModel, flowModel, rfInstance]
   );
 
-  const onNodeChange = (changes: NodeChange[]) => {
-    setNodeModel((nds: any[]) => applyNodeChanges(changes, nds));
-  };
-  const onEdgeChange = (changes: EdgeChange[]) => {
-    setFlowModel((eds: any[]) => applyEdgeChanges(changes, eds));
-  };
+  // const onNodeChange = (changes: NodeChange[]) => {
+  //   setNodeModel((nds: any[]) => applyNodeChanges(changes, nds));
+  // };
+  // const onEdgeChange = (changes: EdgeChange[]) => {
+  //   setFlowModel((eds: any[]) => applyEdgeChanges(changes, eds));
+  // };
 
   const onConnect = (connection: any) => {
-    setFlowModel((eds: any) => addEdge(connection, eds));
+    setFlowModel((eds: any) => {
+      const { data, ...connRest } = connection;
+      return addEdge(
+        {
+          ...connection,
+          data: {
+            ...data,
+            elementType: 'flow',
+          },
+          type: FlowType.FORWARD,
+          markerEnd: { type: MarkerType.Arrow },
+        },
+        eds
+      );
+    });
   };
 
   const onDragOver = useCallback((event: any) => {
@@ -153,42 +183,62 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     []
   );
 
-  const onClick = useCallback((_: React.SyntheticEvent, element: any) => {},
-  []);
+  const edgeTypes = useMemo(
+    () => ({
+      [FlowType.FORWARD]: FloatingEdge,
+      [FlowType.BACKWARD]: FloatingEdge,
+      [FlowType.CONDITION]: FloatingEdge,
+    }),
+    []
+  );
+
+  const onClick = useCallback((event: React.SyntheticEvent, element: any) => {
+    console.log('event', event, 'element', element);
+    setSelectedElement([element]);
+  }, []);
+
+  const [selectedElement, setSelectedElement] = useState<
+    (RFNode | RFEdge)[] | null
+  >(null);
 
   return (
     <ConfigContext.Provider value={configRuntime}>
-      <ReactFlowProvider>
-        <div
-          className='bpm bpm-editor-root'
-          ref={reactFlowWrapper}
-          style={{ width: '100%', height: '100%' }}
-        >
-          <ReactFlow
-            nodes={nodeModel}
-            edges={flowModel}
-            onInit={(instance) => setRfInstance(instance)}
-            onNodesChange={onNodeChange}
-            onEdgesChange={onEdgeChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            onNodeClick={onClick}
-            onEdgeClick={onClick}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            fitView
-            proOptions={{
-              account: 'paid-custom',
-              hideAttribution: true,
-            }}
+      <RuntimeContext.Provider value={{ selectedElement }}>
+        <ReactFlowProvider>
+          <div
+            className='bpm bpm-editor-root'
+            ref={reactFlowWrapper}
+            style={{ width: '100%', height: '100%' }}
           >
-            <NodeLibrary />
-            <MiniMap />
-            <Controls />
-            <Background />
-          </ReactFlow>
-        </div>
-      </ReactFlowProvider>
+            <ReactFlow
+              nodes={nodeModel}
+              edges={flowModel}
+              onInit={(instance) => setRfInstance(instance)}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              onNodeClick={onClick}
+              onEdgeClick={onClick}
+              onDragOver={onDragOver}
+              onDrop={onDrop}
+              fitView
+              proOptions={{
+                account: 'paid-custom',
+                hideAttribution: true,
+              }}
+              connectionLineComponent={FloatingConnectionLine}
+              edgeTypes={edgeTypes}
+            >
+              <NodeLibrary />
+              {/*<MiniMap />*/}
+              <Controls />
+              <Background />
+              <PropertiesPanel />
+            </ReactFlow>
+          </div>
+        </ReactFlowProvider>
+      </RuntimeContext.Provider>
     </ConfigContext.Provider>
   );
 });
