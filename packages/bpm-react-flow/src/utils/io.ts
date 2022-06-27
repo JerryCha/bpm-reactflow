@@ -1,4 +1,8 @@
-import { Edge as RFEdge, Node as RFNode } from 'react-flow-renderer';
+import {
+  Edge as RFEdge,
+  Node as RFNode,
+  NodeProps as RFNodeProps,
+} from 'react-flow-renderer';
 import { FlowModelPro, NodeModelPro } from '@/models';
 import { NodeType, FlowType, ProcessModel } from '@/models';
 
@@ -21,6 +25,22 @@ export const toNodeModel = (rfNode: RFNode): NodeModelPro => {
     ...restData,
     canvasProps: {
       ...position,
+    },
+  };
+};
+
+export const rfNodePropsToNodeModel = (
+  rfNodeProps: RFNodeProps
+): NodeModelPro => {
+  const { id, type, data, xPos, yPos } = rfNodeProps;
+  const { elementType, ...restData } = data;
+  return {
+    id,
+    type: type as NodeType,
+    ...restData,
+    canvasProps: {
+      x: xPos,
+      y: yPos,
     },
   };
 };

@@ -1,4 +1,4 @@
-import { NodeMapType, NodePro } from '../models';
+import { NodeMapType, NodePro, NodeType } from '../models';
 import { nanoid } from 'nanoid';
 
 export const createNodeMap = (nodes: NodePro[]) => {
@@ -17,4 +17,8 @@ export const getDefaultNodeModel = (node: NodePro) => {
     canvasProps: { x: 0, y: 0 },
     options: node.defaultOptions || {},
   };
+};
+
+export const isManualNode = (type: string) => {
+  return [NodeType.APPROVE, NodeType.INPUT].includes(type as NodeType);
 };

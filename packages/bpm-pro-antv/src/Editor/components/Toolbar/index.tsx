@@ -1,5 +1,5 @@
-import {Button} from "@bpm/base-ui";
-import { Group, Text } from "@mantine/core";
+import { Button } from '@bpm/base-ui';
+import { Group, Text } from '@mantine/core';
 
 export const Toolbar = () => {
   return (

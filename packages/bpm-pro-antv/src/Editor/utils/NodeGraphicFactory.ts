@@ -1,4 +1,4 @@
-import { NodeType } from "@bpm/type";
+import { NodeType } from "@bpm/types";
 
 interface INodeGraphic {
   type: NodeType;

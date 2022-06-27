@@ -25,7 +25,8 @@ import ReactFlow, {
 import { ConfigContext } from './contexts/ConfigContext';
 import { FlowPro, FlowType, NodePro, NodeType, ProcessModel } from './models';
 import { createNodeMap, getDefaultNodeModel } from './utils/node';
-import { NodeCanvasWrapper } from './components/NodeCanvasWrapper';
+// import { NodeCanvasWrapper } from './components/NodeCanvasWrapper';
+import { NodeWrapper as NodeCanvasWrapper } from '@/components/NodeWrapper';
 import {
   FloatingConnectionLine,
   FloatingEdge,
@@ -183,14 +184,14 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     []
   );
 
-  const edgeTypes = useMemo(
-    () => ({
-      [FlowType.FORWARD]: FloatingEdge,
-      [FlowType.BACKWARD]: FloatingEdge,
-      [FlowType.CONDITION]: FloatingEdge,
-    }),
-    []
-  );
+  // const edgeTypes = useMemo(
+  //   () => ({
+  //     [FlowType.FORWARD]: FloatingEdge,
+  //     [FlowType.BACKWARD]: FloatingEdge,
+  //     [FlowType.CONDITION]: FloatingEdge,
+  //   }),
+  //   []
+  // );
 
   const onClick = useCallback((event: React.SyntheticEvent, element: any) => {
     console.log('event', event, 'element', element);
@@ -227,14 +228,14 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
                 account: 'paid-custom',
                 hideAttribution: true,
               }}
-              connectionLineComponent={FloatingConnectionLine}
-              edgeTypes={edgeTypes}
+              // connectionLineComponent={FloatingConnectionLine}
+              // edgeTypes={edgeTypes}
             >
               <NodeLibrary />
               {/*<MiniMap />*/}
               <Controls />
               <Background />
-              <PropertiesPanel />
+              {/*<PropertiesPanel />*/}
             </ReactFlow>
           </div>
         </ReactFlowProvider>

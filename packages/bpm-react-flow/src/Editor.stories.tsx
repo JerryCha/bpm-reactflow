@@ -44,17 +44,7 @@ const initialNodes = [
   },
 ];
 
-const initialEdges = [
-  {
-    id: 'e1-2',
-    type: FlowType.CONDITION,
-    name: 'Some Flow',
-    source: '1',
-    target: '2',
-    canvasProps: {},
-    options: { conditionExpression: 'a==1' },
-  },
-];
+const initialEdges = [];
 
 export const EditorStory = () => {
   const editorRef = useRef<any>(null);

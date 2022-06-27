@@ -15,7 +15,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "@bpm/base-ui": "workspace:*",
-    "@bpm/type": "workspace:*"
+    "@bpm/types": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.18.5",
