@@ -7,8 +7,9 @@ export const StartNode: NodePro<any> = {
   name: '开始',
   defaultOptions: {},
   icon: (
-    <div
+    <span
       style={{
+        display: 'inline-block',
         boxSizing: 'border-box',
         width: 16,
         height: 16,
@@ -16,6 +17,6 @@ export const StartNode: NodePro<any> = {
         borderRadius: "50%",
         border: '2px solid #FFF',
       }}
-    ></div>
+    ></span>
   ),
 }

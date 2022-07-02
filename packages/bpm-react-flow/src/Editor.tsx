@@ -193,14 +193,14 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
   //   []
   // );
 
+  const [selectedElement, setSelectedElement] = useState<
+    (RFNode | RFEdge)[] | null
+  >(null);
+
   const onClick = useCallback((event: React.SyntheticEvent, element: any) => {
     console.log('event', event, 'element', element);
     setSelectedElement([element]);
   }, []);
-
-  const [selectedElement, setSelectedElement] = useState<
-    (RFNode | RFEdge)[] | null
-  >(null);
 
   return (
     <ConfigContext.Provider value={configRuntime}>
@@ -235,7 +235,7 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
               {/*<MiniMap />*/}
               <Controls />
               <Background />
-              {/*<PropertiesPanel />*/}
+              <PropertiesPanel />
             </ReactFlow>
           </div>
         </ReactFlowProvider>

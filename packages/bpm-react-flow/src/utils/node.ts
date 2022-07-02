@@ -22,3 +22,11 @@ export const getDefaultNodeModel = (node: NodePro) => {
 export const isManualNode = (type: string) => {
   return [NodeType.APPROVE, NodeType.INPUT].includes(type as NodeType);
 };
+
+export const isEndNode = (type: string) => {
+  return [NodeType.END, NodeType.TERMINATE_END].includes(type as NodeType);
+}
+
+export const isStartNode = (type: string) => {
+  return [NodeType.START].includes(type as NodeType);
+}

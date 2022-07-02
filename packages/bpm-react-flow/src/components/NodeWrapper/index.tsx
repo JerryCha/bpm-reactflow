@@ -5,7 +5,7 @@ import {
   NodeProps as RFNodeProps,
   Position,
 } from 'react-flow-renderer';
-import { isManualNode, rfNodePropsToNodeModel } from '@/utils';
+import { isEndNode, isManualNode, isStartNode, rfNodePropsToNodeModel } from '@/utils';
 import { useConfigContext } from '@/contexts/ConfigContext';
 
 export const NodeWrapper = (props: RFNodeProps) => {
@@ -16,7 +16,7 @@ export const NodeWrapper = (props: RFNodeProps) => {
 
   return (
     <>
-      <Handle position={Position.Top} type='target' id='inbound' />
+      {!isStartNode(props.type) && <Handle position={Position.Top} type='target' id='inbound' />}
       {showBackwardPort && (
         <Handle
           type='target'
@@ -39,6 +39,7 @@ export const NodeWrapper = (props: RFNodeProps) => {
         <NodeHeader
           name={nodeModel.name}
           color={nodeDefinition.color || '#9AC8E2'}
+          icon={nodeDefinition.icon}
         />
       </div>
       {showBackwardPort && (
@@ -49,7 +50,7 @@ export const NodeWrapper = (props: RFNodeProps) => {
           style={{ top: 48 }}
         />
       )}
-      <Handle position={Position.Bottom} type='source' id='outbound' />
+      {!isEndNode(props.type) && <Handle position={Position.Bottom} type='source' id='outbound' />}
     </>
   );
 };

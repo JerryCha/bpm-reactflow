@@ -6,10 +6,11 @@ export interface NodeHeaderProps {
   name?: string;
   onChange?: (nextName: string) => void;
   color?: string;
+  icon?: React.ReactElement | string;
 }
 
 export const NodeHeader = (props: NodeHeaderProps) => {
-  const { name, onChange, color } = props;
+  const { name, onChange, color, icon } = props;
   const [editing, setEditing] = useState(false);
   return (
     <div
@@ -30,6 +31,7 @@ export const NodeHeader = (props: NodeHeaderProps) => {
           style={{ color: '#fff' }}
           // onClick={() => setEditing(true)}
         >
+          {typeof icon !=='string' && icon}
           {name}
         </div>
       )}

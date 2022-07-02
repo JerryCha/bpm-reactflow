@@ -9,6 +9,7 @@ export const EndNode: NodePro<any> = {
   icon: (
     <div
       style={{
+        display: 'inline-block',
         boxSizing: 'border-box',
         width: 16,
         height: 16,

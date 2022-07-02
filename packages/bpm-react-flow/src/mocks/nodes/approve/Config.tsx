@@ -6,7 +6,7 @@ export const Config = (props: NodeConfigProps<ApproveNodeOptions>) => {
   return (
     <div>
       <Form onSubmit={() => {}}>
-        {(props) => <form onSubmit={props.handleSubmit}></form>}
+        {(props) => <form onSubmit={props.handleSubmit}>1234</form>}
       </Form>
     </div>
   );
