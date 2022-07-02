@@ -1,5 +1,6 @@
 import {
   Edge as RFEdge,
+  MarkerType,
   Node as RFNode,
   NodeProps as RFNodeProps,
 } from 'react-flow-renderer';
@@ -10,6 +11,7 @@ export const toProcessModel = (
   rfNodes: RFNode[],
   rfEdges: RFEdge[]
 ): ProcessModel => {
+  console.log(rfEdges);
   return {
     nodes: rfNodes.map(toNodeModel),
     flows: rfEdges.map(toFlowModel),
@@ -46,11 +48,11 @@ export const rfNodePropsToNodeModel = (
 };
 
 export const toFlowModel = (rfEdge: RFEdge): FlowModelPro => {
-  const { id, source, target, data, sourceHandle, targetHandle } = rfEdge;
+  const { id, type, source, target, data, sourceHandle, targetHandle } = rfEdge;
   const { elementType, ...restData } = data;
   return {
     id,
-    type: FlowType.CONDITION,
+    type,
     target,
     source,
     canvasProps: {
@@ -80,5 +82,6 @@ export const toRFEdge = (flowModel: FlowModelPro): RFEdge => {
     sourceHandle: canvasProps.sourceHandle,
     targetHandle: canvasProps.targetHandle,
     data: { ...rest, elementType: 'flow' },
+    markerEnd: { type: MarkerType.Arrow },
   };
 };

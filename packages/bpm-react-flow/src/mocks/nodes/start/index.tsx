@@ -1,4 +1,5 @@
 import { NodePro, NodeType } from '../../../models'
+import StartIcon from "./start.svg";
 
 export const StartNode: NodePro<any> = {
   type: NodeType.START,
@@ -6,17 +7,5 @@ export const StartNode: NodePro<any> = {
   color: 'rgb(73, 137, 255)',
   name: '开始',
   defaultOptions: {},
-  icon: (
-    <span
-      style={{
-        display: 'inline-block',
-        boxSizing: 'border-box',
-        width: 16,
-        height: 16,
-        background: 'transparent',
-        borderRadius: "50%",
-        border: '2px solid #FFF',
-      }}
-    ></span>
-  ),
+  icon: <StartIcon />,
 }

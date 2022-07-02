@@ -25,8 +25,12 @@ export const isManualNode = (type: string) => {
 
 export const isEndNode = (type: string) => {
   return [NodeType.END, NodeType.TERMINATE_END].includes(type as NodeType);
-}
+};
 
 export const isStartNode = (type: string) => {
   return [NodeType.START].includes(type as NodeType);
-}
+};
+
+export const isGatewayNode = (type: string) => {
+  return [NodeType.OR_GATEWAY, NodeType.XOR_GATEWAY].includes(type as NodeType);
+};

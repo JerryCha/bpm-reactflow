@@ -2,6 +2,7 @@ import { useConfigContext } from '@/contexts/ConfigContext';
 import { map } from 'lodash-es';
 import React, { DragEventHandler, useCallback, useMemo } from 'react';
 import { NodeModelPro, NodeType } from '@/models';
+import { Divider } from '@/components/Divider';
 
 interface NodeItem {
   type: NodeType;
@@ -30,8 +31,8 @@ const NodeItem = (
       draggable
       onDragStart={(event) => props.onDrag(event, props.subType)}
     >
-      <div style={{ fontSize: 16, color: '#000' }}>{props.icon}</div>
-      <div>{props.name}</div>
+      <div style={{ fontSize: 20, color: '#6e7786' }}>{props.icon}</div>
+      <div style={{ fontSize: 12, color: '#091528' }}>{props.name}</div>
     </div>
   );
 };
@@ -98,7 +99,7 @@ export const NodeLibrary = () => {
                 />
               ))}
             </div>
-            {index !== nodeGroups.length - 1 && <div>分割线</div>}
+            {index !== nodeGroups.length - 1 && <Divider thick={1} gap={8} width={60} />}
           </React.Fragment>
         );
       })}

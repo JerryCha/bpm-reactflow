@@ -1,0 +1,14 @@
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="专业流程_流程设计_部分交互设计" transform="translate(-290.000000, -108.000000)">
+            <g id="编组-10备份-8" transform="translate(270.000000, 100.000000)">
+                <g id="编组" transform="translate(18.000000, 8.000000)">
+                    <g id="icon/组件栏/节点/开始" transform="translate(2.000000, 0.000000)">
+                        <rect id="矩形" fill="#FF0000" opacity="0" x="0" y="0" width="20" height="20"></rect>
+                        <circle id="椭圆形" stroke="currentColor" stroke-width="2" cx="10" cy="10" r="9"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

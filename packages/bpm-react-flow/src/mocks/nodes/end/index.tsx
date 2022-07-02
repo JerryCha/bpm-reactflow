@@ -1,4 +1,5 @@
 import { NodePro, NodeType } from '../../../models'
+import EndIcon from "./end.svg";
 
 export const EndNode: NodePro<any> = {
   type: NodeType.END,
@@ -6,18 +7,5 @@ export const EndNode: NodePro<any> = {
   color: 'rgb(73, 137, 255)',
   name: '结束',
   defaultOptions: {},
-  icon: (
-    <div
-      style={{
-        display: 'inline-block',
-        boxSizing: 'border-box',
-        width: 16,
-        height: 16,
-        background: 'transparent',
-        borderRadius: '50%',
-        border: '3px solid #FFF',
-      }}
-    >
-    </div>
-  ),
+  icon: <EndIcon />
 }

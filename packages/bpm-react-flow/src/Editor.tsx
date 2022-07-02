@@ -24,7 +24,12 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import { ConfigContext } from './contexts/ConfigContext';
 import { FlowPro, FlowType, NodePro, NodeType, ProcessModel } from './models';
-import { createNodeMap, getDefaultNodeModel } from './utils/node';
+import {
+  createNodeMap,
+  getDefaultNodeModel,
+  isGatewayNode,
+  isManualNode,
+} from './utils/node';
 // import { NodeCanvasWrapper } from './components/NodeCanvasWrapper';
 import { NodeWrapper as NodeCanvasWrapper } from '@/components/NodeWrapper';
 import {
@@ -37,6 +42,7 @@ import {
 import { NodeLibrary } from '@/components/NodeLibrary';
 import { PropertiesPanel } from '@/components/PropertiesPanel';
 import { RuntimeContext } from './contexts/RuntimeContext';
+import { createFlowMap } from '@/utils/flow';
 
 export interface GroupCategories {
   id: string;
@@ -75,13 +81,15 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
   );
 
   const nodeMap = useMemo(() => createNodeMap(nodes), [nodes]);
+  const flowMap = useMemo(() => createFlowMap(flows), [flows]);
 
   const configRuntime = useMemo(() => {
     return {
       nodeMap,
+      flowMap,
       groupCategories,
     };
-  }, [nodeMap, groupCategories]);
+  }, [nodeMap, flowMap, groupCategories]);
 
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance>();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -117,7 +125,30 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
 
   const onConnect = (connection: any) => {
     setFlowModel((eds: any) => {
-      const { data, ...connRest } = connection;
+      console.log('connection', connection, nodeModel);
+      const { data, source, target, sourceHandle, targetHandle } = connection;
+      const terminusNodes = nodeModel.filter(
+        (node) => node.id === source || node.id === target
+      );
+      const from = terminusNodes.find((n) => n.id === source);
+      const to = terminusNodes.find((n) => n.id === target);
+      // Judge the flow direction to determine the flow type
+      let flowType;
+      if (isGatewayNode(from!.type!)) {
+        flowType = FlowType.CONDITION;
+      } else if (isManualNode(from!.type!)) {
+        if (
+          sourceHandle === 'backward-source' &&
+          targetHandle === 'backward-target'
+        ) {
+          flowType = FlowType.BACKWARD;
+        } else {
+          return eds;
+        }
+      } else {
+        flowType = FlowType.FORWARD;
+      }
+
       return addEdge(
         {
           ...connection,
@@ -125,7 +156,7 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
             ...data,
             elementType: 'flow',
           },
-          type: FlowType.FORWARD,
+          type: flowType,
           markerEnd: { type: MarkerType.Arrow },
         },
         eds
@@ -171,19 +202,6 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     [nodeMap, rfInstance]
   );
 
-  const nodeTypes = useMemo(
-    () => ({
-      [NodeType.START]: NodeCanvasWrapper,
-      [NodeType.END]: NodeCanvasWrapper,
-      [NodeType.TERMINATE_END]: NodeCanvasWrapper,
-      [NodeType.APPROVE]: NodeCanvasWrapper,
-      [NodeType.INPUT]: NodeCanvasWrapper,
-      [NodeType.XOR_GATEWAY]: NodeCanvasWrapper,
-      [NodeType.OR_GATEWAY]: NodeCanvasWrapper,
-    }),
-    []
-  );
-
   // const edgeTypes = useMemo(
   //   () => ({
   //     [FlowType.FORWARD]: FloatingEdge,
@@ -201,6 +219,19 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
     console.log('event', event, 'element', element);
     setSelectedElement([element]);
   }, []);
+
+  const nodeTypes = useMemo(
+    () => ({
+      [NodeType.START]: NodeCanvasWrapper,
+      [NodeType.END]: NodeCanvasWrapper,
+      [NodeType.TERMINATE_END]: NodeCanvasWrapper,
+      [NodeType.APPROVE]: NodeCanvasWrapper,
+      [NodeType.INPUT]: NodeCanvasWrapper,
+      [NodeType.XOR_GATEWAY]: NodeCanvasWrapper,
+      [NodeType.OR_GATEWAY]: NodeCanvasWrapper,
+    }),
+    []
+  );
 
   return (
     <ConfigContext.Provider value={configRuntime}>
@@ -221,6 +252,7 @@ export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
               nodeTypes={nodeTypes}
               onNodeClick={onClick}
               onEdgeClick={onClick}
+              onPaneClick={() => setSelectedElement(null)}
               onDragOver={onDragOver}
               onDrop={onDrop}
               fitView

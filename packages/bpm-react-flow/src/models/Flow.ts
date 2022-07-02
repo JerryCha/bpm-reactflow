@@ -1,10 +1,13 @@
-import { NodeModelPro } from "./Node";
+import { NodeModelPro, NodePro } from './Node';
+import { ComponentType } from 'react';
 
 export enum FlowType {
-  CONDITION = "CONDITION",
-  FORWARD = "FORWARD",
-  BACKWARD = "BACKWARD"
+  CONDITION = 'CONDITION',
+  FORWARD = 'FORWARD',
+  BACKWARD = 'BACKWARD',
 }
+
+export type FlowMapType = Record<string, FlowPro>;
 
 export interface FlowModelPro<T = any> {
   id: string;
@@ -21,6 +24,7 @@ export interface FlowModelPro<T = any> {
 export interface FlowPro<T = any> {
   type: FlowType;
   defaultOptions?: Partial<T>;
+  Config?: ComponentType<FlowConfigProps<T>>;
 }
 
 export interface FlowConfigProps<T> {

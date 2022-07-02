@@ -23,15 +23,16 @@ export const NodeHeader = (props: NodeHeaderProps) => {
         display: 'flex',
         alignItems: 'center',
         padding: 8,
+        borderRadius: '8px 8px 0 0',
       }}
     >
       {!editing && (
         <div
           className='bpm-node-header name-view'
-          style={{ color: '#fff' }}
+          style={{ color: '#fff', display: 'flex', alignItems: 'center' }}
           // onClick={() => setEditing(true)}
         >
-          {typeof icon !=='string' && icon}
+          {typeof icon !== 'string' && icon}
           {name}
         </div>
       )}
